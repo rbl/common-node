@@ -1,4 +1,3 @@
-common-node
-===========
+common_js now needs lingo if you are using extSchema.
 
-Common javascript code for node.js projects
+    npm install lingo
