@@ -1,5 +1,5 @@
 {
-      "name": "common-node"
+      "name": "rbl"
     , "version": "0.0.1-001"
     , "description": "RBL common javascript code for node projects"
     , "author": {
