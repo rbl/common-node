@@ -1,0 +1,11 @@
+{
+      "name": "common-node"
+    , "version": "0.0.1-001"
+    , "description": "RBL common javascript code for node projects"
+    , "author": {
+        "name": "Tom Seago"
+        , "email": "tom@realityboxlabs.com"
+    }
+    , "dependencies": {
+    }
+}
