@@ -15,7 +15,7 @@ function CommonPasswordChecker(opts, cb) {
     
     // Connect to mongo
     server = new Mongo.Server(opts.hostname, opts.port, {auto_reconnect:true});
-    self.db = new Mongo.Db(opts.dbname, server);
+    self.db = new Mongo.Db(opts.dbname, server, {safe:false});
  
     self.db.open(function(err, db) {
         if (err) self.dberr = err;
