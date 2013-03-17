@@ -63,14 +63,14 @@ module.exports = function requireRole(requiredRole, failurePath) {
 
         if (!user && requiredRole) {
           // Fail!
-          Logger.warn("No token was found, but resource requires scope",requiredRole);
+          Logger.warn("No token was found, but resource requires scope '",requiredRole,"'");
           return sendFail(req,res,failurePath);
         }
 
         // Verify that the required scope is in there
         if (requiredRole) {
             var scopes = user.allowedRoles;
-            Logger.infoi("Allowed scopes are",scopes);
+            Logger.debugi("Allowed scopes are",scopes);
 
             if (!scopes || scopes.length === 0) 
             {
@@ -92,7 +92,7 @@ module.exports = function requireRole(requiredRole, failurePath) {
             }
 
             if (!gotIt) {
-                Logger.warni("Allowed scopes",scopes,"did not contain required scope",requiredRole);
+                Logger.warni("Allowed scopes ",scopes," did not contain required scope ",requiredRole);
                 return sendFail(req,res,failurePath);
             }
         }

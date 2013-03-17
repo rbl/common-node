@@ -511,3 +511,25 @@ exports.addLogListener = function(logListener) {
     
     logListeners.push(logListener);
 }
+
+
+
+exports.addLoggly = function(token, configOpts) {
+
+    // Only do this once !
+    if (exports.logglyClient) return;
+
+    var loggly = require('loggly');
+    var client = loggly.createClient(configOpts);
+
+    this.addLogListener({
+        logMessage: function(opts, msg) {
+            var out = {
+                msg: msg
+                , l: opts.level
+            }
+            client.log(token, out)
+        }
+    });
+    // client.log('5837c9f3-606b-4652-897e-d3039fcc3f95', 'One small step for man, one giant leap for JavaScript.')
+}
