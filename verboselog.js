@@ -50,9 +50,9 @@ module.exports = function(options) {
         
         Logger.hr();
         Logger.debugi(counter, " Starting ", req.method, " ", req.url, "\n", req.headers);
-        Logger.infoi(counter, " Request Params ", req.params);
-        Logger.infoi(counter, " Request Query ", req.query);
-        Logger.infoi(counter, " Request Body ", req.body);
+        //Logger.infoi(counter, " Request Params ", req.params);
+        Logger.debugi(counter, " Request Query ", req.query);
+        Logger.debugi(counter, " Request Body ", req.body);
 
         // Wrap writeHead to hook into the exit path through the layers.
         var writeHead = res.writeHead;
@@ -63,15 +63,25 @@ module.exports = function(options) {
                 // Put the original back
                 // Log the outgoing response
                 Logger.warni(counter, " Ending ", req.method, " ", req.url, " ", code);
-                if (headers) Logger.debugi(counter, "Headers\n", headers);
+                if (options.headers && res._headers) Logger.debugi(counter, "Response Headers\n", res._headers);
+
+                // if (res.statusCode != 200) {
+                //     if (res.body) {
+                //         Logger.errori(res.body);
+                //     } else {
+                //         Logger.error("No response body");
+                //     }
+                // }
+
+                if ((code >= 400) && (code<=600) && options.errorStackTrace) Logger.logStackUntil();
                 //L.logStackUntil();
                 
-                var cookie = res.getHeader("Set-Cookie");
-                if (cookie) {
-                    Logger.debug("Set-Cookie: ",cookie);
-                } else {
-                    //Logger.debug("No Set-Cookie header");
-                }
+                // var cookie = res.getHeader("Set-Cookie");
+                // if (cookie) {
+                //     Logger.debug("Set-Cookie: ",cookie);
+                // } else {
+                //     //Logger.debug("No Set-Cookie header");
+                // }
                 
                 res.writeHead(code, headers);
                 // Call the original

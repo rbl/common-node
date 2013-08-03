@@ -36,6 +36,52 @@ exports.toTZ = function(gmt, tz) {
     return new Date(newMS);
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * Get the name associated with a numerical timezone
+ */
+var TIMEZONE = [];
+
+TIMEZONE[-12]="-12:00, Eniwetok, Kwajalein"
+TIMEZONE[-11]="-11:00, Midway Island, Samoa"
+TIMEZONE[-10]="-10:00, Hawaii"
+TIMEZONE[-9]="- 9:00, Alaska"
+TIMEZONE[-8]="- 8:00, US PACIFIC"
+TIMEZONE[-7]="- 7:00, US MOUNTAIN"
+TIMEZONE[-6]="- 6:00, US CENTRAL, Mexico City"
+TIMEZONE[-5]="- 5:00, US EASTERN, Bogota, Lima"
+TIMEZONE[-4]="- 4:00, Atlantic Time, Caracas, La Paz"
+TIMEZONE[-3.5]="- 3:30, Newfoundland"
+TIMEZONE[-3]="- 3:00, Brazil, Buenos Aires, Georgetown"
+TIMEZONE[-2]="- 2:00, Mid-Atlantic"
+TIMEZONE[-1]="- 1:00, Azores, Cape Verde Islands"
+TIMEZONE[0]="+ 0:00, Western Europe Time, London"
+TIMEZONE[1]="+ 1:00, Copenhagen, Madrid, Paris"
+TIMEZONE[2]="+ 2:00, Kaliningrad, South Africa"
+TIMEZONE[3]="+ 3:00, Baghdad, Moscow, St. Petersburg"
+TIMEZONE[3.5]="+ 3:30, Tehran"
+TIMEZONE[4]="+ 4:00, Abu Dhabi, Muscat, Baku, Tbilisi"
+TIMEZONE[4.5]="+ 4:30, Kabul"
+TIMEZONE[5]="+ 5:00, Islamabad, Karachi, Tashkent"
+TIMEZONE[5.5]="+ 5:30, Bombay, Madras, New Delhi"
+TIMEZONE[5.75]="+ 5:45, Kathmandu"
+TIMEZONE[6]="+ 6:00, Almaty, Dhaka, Colombo"
+TIMEZONE[7]="+ 7:00, Bangkok, Hanoi, Jakarta"
+TIMEZONE[8]="+ 8:00, Beijing, Perth, Singapore"
+TIMEZONE[9]="+ 9:00, Tokyo, Seoul, Yakutsk"
+TIMEZONE[9.5]="+ 9:30, Adelaide, Darwin"
+TIMEZONE[10]="+10:00, Eastern Australia, Vladivostok"
+TIMEZONE[11]="+11:00, Solomon Islands, New Caledonia"
+TIMEZONE[12]="+12:00, Auckland, Wellington"
+
+exports.tzName = function(tz) {
+    var r = TIMEZONE[tz];
+    if (!r) return ""+tz+" UNUSUAL TIMEZONE!";
+    return r;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /**
  * Return a formatted date string for the given timezone, which is presumably
@@ -95,7 +141,7 @@ exports.formatDate = function(gmt, tz) {
  *      full:  Wed Apr 2 18:23:04.344
  */
 exports.formatDateAndTime = function(gmt, tz) {
-    tz = tz || 0.0;
+    tz = parseFloat(tz) || 0.0;
     
     if (typeof gmt !== 'object') {
         gmt = new Date(gmt);
@@ -150,5 +196,7 @@ if (!module.parent) {
         console.log(exports.formatDate(gmt,tz));        
     }
     
-    console.log(exports.formatDateAndTime(gmt,-8.0));
+    console.log(exports.formatDateAndTime(gmt,0.0));
+    console.log(exports.formatDateAndTime(gmt,"-8.0"));
+    console.log(exports.formatDateAndTime(gmt,2.0));
 }
