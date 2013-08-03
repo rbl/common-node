@@ -14,9 +14,9 @@ var CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.spl
  * Generates a universally (more or less) uid by creating a random stream
  * of characters. Should be reasonably fine most of the time.
  */
-exports.uuid = function(len) {
+exports.uuid = function(len, chars) {
     var len = len || 20;
-    var chars = CHARS;
+    var chars = chars || CHARS;
     var uuid = [];
     var radix = chars.length;
 

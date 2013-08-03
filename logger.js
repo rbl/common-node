@@ -514,22 +514,71 @@ exports.addLogListener = function(logListener) {
 
 
 
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * Add a listener which will transmit log messages to loggly either as plain text
+ * or as json messages if the json option is set for the loggly config.
+ */
 exports.addLoggly = function(token, configOpts) {
-
-    // Only do this once !
-    if (exports.logglyClient) return;
 
     var loggly = require('loggly');
     var client = loggly.createClient(configOpts);
 
+    if (typeof configOpts.localLevel == "undefined") {
+        var logLevel = exports.WARN;
+    } else {
+        var logLevel = configOpts.localLevel;
+    }
+
     this.addLogListener({
         logMessage: function(opts, msg) {
-            var out = {
-                msg: msg
-                , l: opts.level
+
+            if (opts.level > logLevel) return;
+
+            var timestamp = opts.date.valueOf() || Date.now();
+
+            if (!configOpts.json) {
+                // Text
+                var out = ["", timestamp, " "];
+                out.push("LOG"+logLevelNames[opts.level]);
+                out.push(" ");
+                out.push(msg);
+                out = out.join("");
+            } else {
+                // JSON for the win
+                var out = {
+                    timestamp: timestamp
+                    , message: msg
+                    , level: logLevelNames[opts.level]
+                }
+                if (opts.type) {
+                    out.type = opts.type;
+                }
             }
+
             client.log(token, out)
         }
     });
-    // client.log('5837c9f3-606b-4652-897e-d3039fcc3f95', 'One small step for man, one giant leap for JavaScript.')
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+/**
+ * Writes the pid of the current process to a named file in a particular
+ * directory. This is useful in a number of unixy situations.
+ */
+exports.writePid = function(dir, name) {
+    if (dir && name) {
+        // Write this process pid to a file
+        var out = ""+process.pid;
+
+        var name = require("path").join(dir, name);
+        exports.info("Writing pid ",out," to ",name);
+        require("fs").writeFile(name, out, null, function(err) {
+            exports.logErrorObj("Writing pid file to "+name, err);
+        });
+    } else {
+        exports.debug("Not writing pid file");
+    }
+}
+
