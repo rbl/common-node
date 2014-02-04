@@ -1,11 +1,15 @@
 {
       "name": "rbl"
-    , "version": "0.0.1-004"
+    , "version": "0.0.1-005"
     , "description": "RBL common javascript code for node projects"
     , "author": {
         "name": "Tom Seago"
         , "email": "tom@realityboxlabs.com"
     }
     , "dependencies": {
+    }
+    , "repository" : { 
+        "type" : "git"
+        , "url" : "http://github.com/rbl/common-node.git"
     }
 }
