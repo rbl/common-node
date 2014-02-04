@@ -65,14 +65,6 @@ module.exports = function(options) {
                 Logger.warni(counter, " Ending ", req.method, " ", req.url, " ", code);
                 if (options.headers && res._headers) Logger.debugi(counter, "Response Headers\n", res._headers);
 
-                // if (res.statusCode != 200) {
-                //     if (res.body) {
-                //         Logger.errori(res.body);
-                //     } else {
-                //         Logger.error("No response body");
-                //     }
-                // }
-
                 if ((code >= 400) && (code<=600) && options.errorStackTrace) Logger.logStackUntil();
                 //L.logStackUntil();
                 
@@ -88,6 +80,45 @@ module.exports = function(options) {
             };
 
         })(counter, req, res, writeHead);
+
+        // If the logBody option is set we will try to log the body
+        if (options.logBody) {
+            var origWrite = res.write;
+            (function(oWrite) {
+                var myWrite;
+                myWrite = res.write = function(chunk, encoding) {
+
+                    Logger.errori(chunk);
+
+                    // Swap-a-rooney
+                    res.write = oWrite;
+                    var returnVal = res.write(chunk, encoding);
+                    res.write = myWrite;
+
+                    return returnVal;
+                }
+
+            })(origWrite);
+
+            var origEnd = res.end;
+            (function(oEnd) {
+                var myEnd;
+                myEnd = res.end = function(chunk, encoding) {
+
+                    Logger.errori(chunk);
+
+                    // Swap-a-rooney
+                    res.end = oEnd;
+                    var returnVal = res.end(chunk, encoding);
+                    res.end = myEnd;
+
+                    return returnVal;
+                }
+
+            })(origEnd);
+
+
+        }
         
         
         // We would like to know when there is data and stuff
