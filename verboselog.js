@@ -93,9 +93,9 @@ module.exports = function(options) {
 
                     if (!haveWrittenParams) {
                         Logger.debugi(counter, " Request Params ", req.params);
-                        Logger.infoi(counter, " >> Received this body:");
+                        Logger.infoi(counter, ">> Received this body:");
                         Logger.infoi(counter, req.body);
-                        Logger.error(counter, " << Sending this response:");
+                        Logger.error(counter, "<< Sending this response:");
                         haveWrittenParams = true;
                     }
 
