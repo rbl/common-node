@@ -5,7 +5,7 @@
 var Logger = require("rbl/logger");
 
 module.exports = function(options) {
-    var counter = 0;
+    var counterVal = 0;
     
     options = options || {};
     options.simpleForm = options.simpleForm || {};
@@ -13,7 +13,8 @@ module.exports = function(options) {
 
     return function(req, res, next) {
         // Log the incoming request
-        counter++;
+        counterVal++;
+        var counter = "[" + counterVal + "] ";
         
         //Logger.warni(req);
         
@@ -50,9 +51,9 @@ module.exports = function(options) {
         
         Logger.hr();
         Logger.debugi(counter, " Starting ", req.method, " ", req.url, "\n", req.headers);
-        //Logger.infoi(counter, " Request Params ", req.params);
         Logger.debugi(counter, " Request Query ", req.query);
-        Logger.debugi(counter, " Request Body ", req.body);
+
+        //Logger.warni(counter, req);
 
         // Wrap writeHead to hook into the exit path through the layers.
         var writeHead = res.writeHead;
@@ -81,14 +82,24 @@ module.exports = function(options) {
 
         })(counter, req, res, writeHead);
 
+
         // If the logBody option is set we will try to log the body
         if (options.logBody) {
+            var haveWrittenParams = false;
             var origWrite = res.write;
             (function(oWrite) {
                 var myWrite;
                 myWrite = res.write = function(chunk, encoding) {
 
-                    Logger.errori(chunk);
+                    if (!haveWrittenParams) {
+                        Logger.debugi(counter, " Request Params ", req.params);
+                        Logger.infoi(counter, " >> Received this body:");
+                        Logger.infoi(counter, req.body);
+                        Logger.error(counter, " << Sending this response:");
+                        haveWrittenParams = true;
+                    }
+
+                    Logger.errori(counter, chunk);
 
                     // Swap-a-rooney
                     res.write = oWrite;
@@ -105,7 +116,15 @@ module.exports = function(options) {
                 var myEnd;
                 myEnd = res.end = function(chunk, encoding) {
 
-                    Logger.errori(chunk);
+                    if (!haveWrittenParams) {
+                        Logger.debugi(counter, " Request Params ", req.params);
+                        Logger.infoi(counter, ">> Received this body:");
+                        Logger.infoi(counter, req.body);
+                        Logger.error(counter, "<< Sending this response:");
+                        haveWrittenParams = true;
+                    }
+
+                    Logger.errori(counter, chunk);
 
                     // Swap-a-rooney
                     res.end = oEnd;

@@ -1,6 +1,6 @@
 {
       "name": "rbl"
-    , "version": "0.0.1-005"
+    , "version": "0.0.1-006"
     , "description": "RBL common javascript code for node projects"
     , "author": {
         "name": "Tom Seago"
